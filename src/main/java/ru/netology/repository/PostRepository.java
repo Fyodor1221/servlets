@@ -4,29 +4,28 @@ import ru.netology.model.Post;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class PostRepository {
-  private final ConcurrentHashMap.KeySetView<Post,Boolean> repository = ConcurrentHashMap.newKeySet();
-  private long count;
+  private static final ConcurrentHashMap<Long, Post> repository = new ConcurrentHashMap<>();
+  private static final AtomicLong count = new AtomicLong();
 
   public List<Post> all() {
-    return new ArrayList<>(repository);
+    return (List<Post>) repository.values();
   }
 
   public Optional<Post> getById(long id) {
-    for (Post post : repository) {
-      if (post.getId() == id) {
-        return Optional.of(post);
-      }
+    Post post = repository.get(id);
+    if (post == null) {
+      return Optional.empty();
     }
-    return Optional.empty();
+    return Optional.of(post);
   }
 
   public Post save(Post post) {
     if (post.getId() == 0) {
-      post.setId(count + 1);
-      repository.add(post);
-      count++;
+      post.setId(count.getAndIncrement());
+      repository.put(post.getId(), post);
     }
     else {
       var recentPost = getById(post.getId());
@@ -42,6 +41,6 @@ public class PostRepository {
   }
 
   public void removeById(long id) {
-    repository.removeIf(post -> post.getId() == id);
+    repository.remove(id);
   }
 }

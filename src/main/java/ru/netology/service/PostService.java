@@ -7,10 +7,10 @@ import ru.netology.repository.PostRepository;
 import java.util.List;
 
 public class PostService {
-  private final PostRepository repository;
+  private static PostRepository repository = null;
 
   public PostService(PostRepository repository) {
-    this.repository = repository;
+    PostService.repository = repository;
   }
 
   public List<Post> all() {

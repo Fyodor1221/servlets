@@ -10,6 +10,10 @@ import javax.servlet.http.HttpServletResponse;
 
 public class MainServlet extends HttpServlet {
   private PostController controller;
+  private static String method;
+  private static String path;
+  private static long id;
+
 
   @Override
   public void init() {
@@ -22,13 +26,13 @@ public class MainServlet extends HttpServlet {
   protected void service(HttpServletRequest req, HttpServletResponse resp) {
     // если деплоились в root context, то достаточно этого
     try {
-      final var path = req.getRequestURI();
-      final var method = req.getMethod();
+      path = req.getRequestURI();
+      method = req.getMethod();
 
       controller.setResponse(resp);
 
       if (path.matches("/api/posts/\\d+")) {
-        final var id = Long.parseLong(path.substring(path.lastIndexOf("/")));
+        id = Long.parseLong(path.substring(path.lastIndexOf("/")));
 
         if (method.equals("GET")) {
           // easy way

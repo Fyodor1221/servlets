@@ -9,13 +9,13 @@ import java.io.IOException;
 import java.io.Reader;
 
 public class PostController {
-  public static final String APPLICATION_JSON = "application/json";
-  private final PostService service;
-  private HttpServletResponse response = null;
-  final Gson gson = new Gson();
+  private static final String APPLICATION_JSON = "application/json";
+  private static PostService service = null;
+  private static HttpServletResponse response = null;
+  private static final Gson gson = new Gson();
 
   public PostController(PostService service) {
-    this.service = service;
+    PostController.service = service;
   }
 
   public void all() throws IOException {
@@ -39,7 +39,7 @@ public class PostController {
   }
 
   public void setResponse (HttpServletResponse response) {
-    this.response = response;
+    PostController.response = response;
     response.setContentType(APPLICATION_JSON);
   }
 

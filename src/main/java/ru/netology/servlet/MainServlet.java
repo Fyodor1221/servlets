@@ -9,10 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class MainServlet extends HttpServlet {
-  private PostController controller;
-  private static String method;
-  private static String path;
-  private static long id;
+  private static PostController controller;
+  private String method;
+  private String path;
+  private long id;
 
 
   @Override

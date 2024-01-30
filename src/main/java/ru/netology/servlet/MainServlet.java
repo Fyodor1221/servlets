@@ -10,9 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 
 public class MainServlet extends HttpServlet {
   private static PostController controller;
-  private String method;
-  private String path;
-  private long id;
+  private static final String GET = "GET";
+  private static final String POST = "POST";
+  private static final String DELETE = "DELETE";
+  private static final String API_POSTS = "/api/posts";
+  private static final String API_POSTS_D = "/api/posts/\\d+";
 
 
   @Override
@@ -26,34 +28,32 @@ public class MainServlet extends HttpServlet {
   protected void service(HttpServletRequest req, HttpServletResponse resp) {
     // если деплоились в root context, то достаточно этого
     try {
-      path = req.getRequestURI();
-      method = req.getMethod();
+      final var path = req.getRequestURI();
+      final var method = req.getMethod();
 
-      controller.setResponse(resp);
+      if (path.matches(API_POSTS_D)) {
+        final var id = Long.parseLong(path.substring(path.lastIndexOf("/")));
 
-      if (path.matches("/api/posts/\\d+")) {
-        id = Long.parseLong(path.substring(path.lastIndexOf("/")));
-
-        if (method.equals("GET")) {
+        if (method.equals(GET)) {
           // easy way
-          controller.getById(id);
+          controller.getById(id, resp);
           return;
         }
 
-        if (method.equals("DELETE")) {
+        if (method.equals(DELETE)) {
           // easy way
-          controller.removeById(id);
+          controller.removeById(id, resp);
           return;
         }
       }
       // primitive routing
-      if (method.equals("GET") && path.equals("/api/posts")) {
-        controller.all();
+      if (method.equals(GET) && path.equals(API_POSTS)) {
+        controller.all(resp);
         return;
       }
 
-      if (method.equals("POST") && path.equals("/api/posts")) {
-        controller.save(req.getReader());
+      if (method.equals(POST) && path.equals(API_POSTS)) {
+        controller.save(req.getReader(), resp);
         return;
       }
 

@@ -7,11 +7,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class PostRepository {
-  private static final ConcurrentHashMap<Long, Post> repository = new ConcurrentHashMap<>();
-  private static final AtomicLong count = new AtomicLong();
+  private final ConcurrentHashMap<Long, Post> repository = new ConcurrentHashMap<>();
+  private final AtomicLong count = new AtomicLong();
 
   public List<Post> all() {
-    return (List<Post>) repository.values();
+    return new ArrayList<>(repository.values());
   }
 
   public Optional<Post> getById(long id) {
